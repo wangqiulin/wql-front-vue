@@ -3,8 +3,10 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import api from './api/api.js' //封装axios
 
 Vue.config.productionTip = false
+Vue.prototype.$http = api //定义全局变量$http
 
 /* eslint-disable no-new */
 new Vue({
