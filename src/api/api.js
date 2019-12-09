@@ -40,13 +40,14 @@ function apiAxios (method, url, params, resp) {
    withCredentials: false
  })
  .then(function (res) {
+   console.log("请求地址：" + root+url +", 返回内容：");
    console.log(res.data);
    resp(res.data)
  })
  .catch(function (err) {
    let res = err.response
    if (err) {
-     window.alert('api error, HTTP CODE: ' + res.status)
+     console.log('api error, HTTP CODE: ' + res.status);
      return;
    }
  })
@@ -60,6 +61,4 @@ export default {
     post: function (url, params, success) {
         return apiAxios('POST', url, params, success)
     }
-  
-
 }

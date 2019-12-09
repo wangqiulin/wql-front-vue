@@ -10,10 +10,21 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      'http://localhost:6100': {
+        target: 'http://47.103.208.243:5002', // 接口的域名
+        // secure: false,  // 如果是https接口，需要配置这个参数
+        changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
+        pathRewrite: {
+          '^http://localhost:6100': '/gateway'
+           //其中'^http://localhost:6100':'/gateway'是说，
+           //把路径里的"http://localhost:6100"打头的"http://localhost:6100"字符串替换成47.103.208.243服务器上的“gateway”目录。
+        }
+      }
+    },
 
     // Various Dev Server settings
-    host: 'localhost', // can be overwritten by process.env.HOST
+    host: '0.0.0.0', // can be overwritten by process.env.HOST
     port: 6100, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
