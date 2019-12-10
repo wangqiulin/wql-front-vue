@@ -2,7 +2,7 @@
     <div>
         <h1>{{ projectName }}</h1>
 
-        <router-link to="helloWord">用户</router-link>   
+        <router-link to="user">用户</router-link>   
    
     </div>
 </template>
