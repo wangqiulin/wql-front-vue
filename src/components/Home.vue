@@ -120,6 +120,7 @@
         //方法，调用后端接口处
         methods: {
             loadData() {
+                //条件查询方法
                 let param = {
                     userName : this.filters.userName
                 };
