@@ -15,6 +15,9 @@ function filterNull (o) {
    if (o[key] === null) {
      delete o[key]
    }
+   if (o[key] === '') {
+    delete o[key]
+   }
    if (toType(o[key]) === 'string') {
      o[key] = o[key].trim()
    } else if (toType(o[key]) === 'object') {
