@@ -138,6 +138,7 @@
             loadData() {
                 //条件查询方法
                 let param = {
+                    apiKey: 'wql.system.user.queryList',
                     userName : this.filters.userName
                 };
                 this.$http.post('/system/queryUserList', param, resp => {
@@ -193,7 +194,7 @@
                 this.$refs.saveFormData.validate((valid) => {
                     //代表通过验证 ,将参数传回后台
                     if (valid) {
-                        let param = Object.assign({}, this.saveFormData);
+                        let param = Object.assign({apiKey: 'wql.system.user.add'}, this.saveFormData);
                         this.$http.post('/system/addUser', param, resp => {
                             if(resp.code == 'success'){
                                 this.$message({
@@ -219,7 +220,7 @@
                 this.$refs.updateFormData.validate((valid) => {
                     //代表通过验证 ,将参数传回后台
                     if (valid) {
-                        let param = Object.assign({}, this.updateFormData);
+                        let param = Object.assign({apiKey: 'wql.system.user.update'}, this.updateFormData);
                         this.$http.post('/system/updateUser', param, resp => {
                             if(resp.code == 'success'){
                                 this.$message({
@@ -245,6 +246,7 @@
                     confirmButtonText: '确定',
                     callback: action => {
                         var params = {
+                            apiKey: 'wql.system.user.delete',
                             userCode: rowData.userCode
                         };
                         this.$http.post('/system/deleteUser', params, resp => {

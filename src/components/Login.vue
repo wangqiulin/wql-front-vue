@@ -48,6 +48,7 @@
                         this.logining = true;
                         //将提交的数据进行封装
                         let params = {
+                            apiKey: 'wql.system.user.login',
                             userName : this.account.userName,
                             userPwd:this.account.userPwd
                         };
