@@ -55,13 +55,13 @@
                 </el-radio-group>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click.native="saveDialogVisible=false, saveFormData={id:'', userName:'', userPwd:''}">取 消</el-button>
-                <el-button v-if="isView" type="primary" @click.native="addSubmit">确 定</el-button>
+                <el-button @click.native="saveDialogVisible=false, saveFormData={id:'', userName:'', userPwd:'', userState:''}">取 消</el-button>
+                <el-button type="primary" @click.native="addSubmit">确 定</el-button>
             </span>
         </el-dialog>
 
-        <!--编辑页面-->
-        <el-dialog title="编辑记录" :visible.sync="updateDialogVisible" width="50%" :close-on-click-modal="false">
+        <!--编辑/详情页面-->
+        <el-dialog title= "编辑记录" :visible.sync="updateDialogVisible" width="50%" :close-on-click-modal="false">
             <el-form :model="updateFormData" :rules="rules2" ref="updateFormData" label-width="0px" class="demo-ruleForm login-container">
                 <el-form-item prop="userName">
                     <el-input type="text" v-model="updateFormData.userName" auto-complete="off" placeholder="账号"></el-input>
@@ -69,10 +69,14 @@
                 <el-form-item prop="userPwd">
                     <el-input type="password" v-model="updateFormData.userPwd" auto-complete="off" placeholder="密码"></el-input>
                 </el-form-item>
+                <el-radio-group v-model="updateFormData.userState">
+                    <el-radio type="radio" :label="1">开启</el-radio>
+                    <el-radio type="radio" :label="0">禁用</el-radio>
+                </el-radio-group>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click.native="updateDialogVisible=false, updateFormData={id:'', userName:'', userPwd:''}">取 消</el-button>
-                <el-button type="primary" @click.native="updateSubmit">确 定</el-button>
+                <el-button @click.native="updateDialogVisible=false, updateFormData={id:'', userCode:'', userName:'', userPwd:'', userState:''}">取 消</el-button>
+                <el-button v-if="isView" type="primary" @click.native="updateSubmit">确 定</el-button>
             </span>
         </el-dialog>
 
@@ -153,9 +157,9 @@
             },
 
             toDetail(rowData) {
-                this.saveFormData = Object.assign({}, rowData);
+                this.updateFormData = Object.assign({}, rowData);
                 this.isView = false;
-                this.saveDialogVisible = true;
+                this.updateDialogVisible = true;
             },
 
             addUser() {
@@ -241,7 +245,7 @@
                     confirmButtonText: '确定',
                     callback: action => {
                         var params = {
-                            userName: rowData.userName
+                            userCode: rowData.userCode
                         };
                         this.$http.post('/system/deleteUser', params, resp => {
                             if(resp.code == 'success'){
@@ -249,6 +253,7 @@
                                     type: 'info',
                                     message: `已删除`
                                 });
+                                this.loadData();
                             } else{
                                 this.$message({
                                     type: 'info',
