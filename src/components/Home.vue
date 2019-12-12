@@ -17,16 +17,19 @@
 
         <!-- 列表展示 -->
         <el-table :data="dataList" style="width: 100%">
-            <el-table-column prop="id" label="id" width="180">
+            <el-table-column prop="id" label="id" width="180" show-overflow-tooltip align="center" v-if="!show"></el-table-column>
+            <el-table-column prop="userCode" label="用户code" width="180" show-overflow-tooltip align="center" v-if="!show"></el-table-column>
+            <el-table-column prop="userName" label="名字" width="180" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column prop="userPwd" label="密码" width="180" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column prop="userState" label="状态" width="180" show-overflow-tooltip align="center">
+                <!-- if判断 -->
+                <template slot-scope="scope">
+                    <p v-if="scope.row.userState=='0'">禁用</p>
+                    <p v-if="scope.row.userState=='1'">开启</p>
+                </template>
             </el-table-column>
-            <el-table-column prop="userName" label="名字" width="180">
-            </el-table-column>
-            <el-table-column prop="userPwd" label="密码" width="180">
-            </el-table-column>
-            <el-table-column prop="createDate" label="创建时间" width="180">
-            </el-table-column>
-            <el-table-column prop="updateDate" label="修改时间" width="180">
-            </el-table-column>
+            <el-table-column prop="createDate" label="创建时间" width="180" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column prop="updateDate" label="修改时间" width="180" show-overflow-tooltip align="center"></el-table-column>
             <el-table-column label="操作" align="center" min-width="100">
                 <template slot-scope="scope">
                     <el-button type="text" @click="toDetail(scope.row)">详情</el-button>
@@ -45,6 +48,11 @@
                 <el-form-item prop="userPwd">
                     <el-input type="password" v-model="saveFormData.userPwd" auto-complete="off" placeholder="密码"></el-input>
                 </el-form-item>
+                <!-- 单选框-->
+                <el-radio-group v-model="saveFormData.userState">
+                    <el-radio type="radio" :label="1">开启</el-radio>
+                    <el-radio type="radio" :label="0">禁用</el-radio>
+                </el-radio-group>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click.native="saveDialogVisible=false, saveFormData={id:'', userName:'', userPwd:''}">取 消</el-button>
@@ -64,7 +72,7 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click.native="updateDialogVisible=false, updateFormData={id:'', userName:'', userPwd:''}">取 消</el-button>
-                <el-button v-if="isView" type="primary" @click.native="updateSubmit">确 定</el-button>
+                <el-button type="primary" @click.native="updateSubmit">确 定</el-button>
             </span>
         </el-dialog>
 
@@ -78,19 +86,23 @@
             return {
                 //动态变量值
                 dataList: [],
-                addFormReadOnly: true,
-                saveDialogVisible: false,
-                updateDialogVisible: false,
-                isView: true,
+                saveDialogVisible: false, //新增框是否显示
+                updateDialogVisible: false, //编辑框是否显示
+                isView: true, //确定按钮是否显示
+                show: true, //展示列字段是否显示
                 saveFormData: {
                     id: '',
+                    userCode: '',
                     userName: '',
-                    userPwd: ''
+                    userPwd: '',
+                    userState: '1'
                 },
                 updateFormData: {
                     id: '',
+                    userCode: '',
                     userName: '',
-                    userPwd: ''
+                    userPwd: '',
+                    userState: ''
                 },
                 //参数校验赋值
                 rules2: {
@@ -124,7 +136,7 @@
                 let param = {
                     userName : this.filters.userName
                 };
-                this.$http.post('/user/queryList', param, resp => {
+                this.$http.post('/system/queryUserList', param, resp => {
                     if(resp.code == 'success'){
                         this.dataList=resp.data;
                     } else{
@@ -141,34 +153,34 @@
             },
 
             toDetail(rowData) {
-                this.addFormData = Object.assign({}, rowData);
+                this.saveFormData = Object.assign({}, rowData);
                 this.isView = false;
                 this.saveDialogVisible = true;
-                this.addFormReadOnly = true;
             },
 
             addUser() {
                 this.saveFormData = {
                     id: '',
+                    userCode: '',
                     userName: '',
                     userPwd: '',
+                    userState: '',
                     createDate: '',
                     updateDate: ''
                 };
                 this.isView = true;
                 this.saveDialogVisible = true;
-                this.addFormReadOnly = false;
             },
 
             modifyUser(rowData) {
                 this.updateFormData = {
                     id: rowData.id,
+                    userCode: rowData.userCode,
                     userName: rowData.userName,
-                    userPwd: rowData.userPwd
+                    userPwd: rowData.userPwd,
+                    userState: rowData.userState
                 };
-                this.isView = true;
                 this.updateDialogVisible = true;
-                this.addFormReadOnly = false;
             },
 
             //增加操作
@@ -178,7 +190,7 @@
                     //代表通过验证 ,将参数传回后台
                     if (valid) {
                         let param = Object.assign({}, this.saveFormData);
-                        this.$http.post('/user/save', param, resp => {
+                        this.$http.post('/system/addUser', param, resp => {
                             if(resp.code == 'success'){
                                 this.$message({
                                     type: 'info',
@@ -204,7 +216,7 @@
                     //代表通过验证 ,将参数传回后台
                     if (valid) {
                         let param = Object.assign({}, this.updateFormData);
-                        this.$http.post('/user/updateById', param, resp => {
+                        this.$http.post('/system/updateUser', param, resp => {
                             if(resp.code == 'success'){
                                 this.$message({
                                     type: 'info',
@@ -229,9 +241,9 @@
                     confirmButtonText: '确定',
                     callback: action => {
                         var params = {
-                            id: rowData.id
+                            userName: rowData.userName
                         };
-                        this.$http.post('/user/deleteById', params, resp => {
+                        this.$http.post('/system/deleteUser', params, resp => {
                             if(resp.code == 'success'){
                                 this.$message({
                                     type: 'info',
