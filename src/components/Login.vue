@@ -1,15 +1,15 @@
 <template>
     <el-form ref='AccountFrom' :model='account' :rules='rules' lable-position='left' lable-width='0px' class='demo-ruleForm login-container'>
-        <h3 class="title">登录系统首页</h3>
+        <h3 class="title">运维后台</h3>
         <el-form-item prop="userName">
-            <el-input type="text" v-model="account.username" auto-complete="off" placeholder="账号"></el-input>
+            <el-input type="text" v-model="account.userName" auto-complete="off" placeholder="账号"></el-input>
         </el-form-item>
         <el-form-item prop="userPwd">
-            <el-input type="password" v-model="account.pwd" auto-complete="off" placeholder="密码"></el-input>
+            <el-input type="password" v-model="account.userPwd" auto-complete="off" placeholder="密码"></el-input>
         </el-form-item>
         <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
         <el-form-item style="width:100%;">
-            <el-button type="primary" style="width:100%;" @click.native.prevent='handleLogin' :loading= 'logining'>登录</el-button>
+            <el-button type="primary" style="width:100%;" @click.native.prevent='handleLogin' :loading='logining'>登录</el-button>
         </el-form-item>
     </el-form>
 </template>
@@ -24,6 +24,7 @@
                     userName: '',
                     userPwd: ''
                 },
+                loginToken: '',
                 rules: {
                     userName: [{
                         required: true,
@@ -46,18 +47,16 @@
                         //验证通过 可以提交
                         this.logining = true;
                         //将提交的数据进行封装
-                        let loginParams = {
+                        let params = {
                             userName : this.account.userName,
                             userPwd:this.account.userPwd
                         };
-                        this.$http.post('/user/queryList', loginParams, resp => {
+                        this.$http.post('/system/userLogin', params, resp => {
                             this.logining = false;
-
                             if(resp.code == 'success'){
                                 //登录成功
-                                this.userInfoList=resp.data;
-
-                                sessionStorage.setItem('access-token',data.token);
+                                this.loginToken=resp.data.token;   
+                                sessionStorage.setItem('Authentication', resp.data.token);
                                 //用vue路由跳转到后台主界面
                                 this.$router.push({path:'/home'});
                             } else{

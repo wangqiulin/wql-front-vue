@@ -10,8 +10,8 @@ let router = new Router({
   routes: [
     {
       path: '/',
-      name: 'Home',
-      component: Home
+      name: 'Login',
+      component: Login
     },
     {
       path: '/login',
@@ -27,18 +27,18 @@ let router = new Router({
 });
 
 //对每次访问之前都要先看是否已经登录
-// router.beforeEach((to, from, next)=>{
-//   if(to.path.startsWith('/login')){
-//     window.sessionStorage.removeItem('access-token');
-//     next();
-//   }else{
-//     let token = window.sessionStorage.getItem('access-token');
-//     if(!token){
-//       //未登录  跳回登录页面
-//       next({path:'/login'});
-//     }else{
-//       next();
-//     }
-//   }       
-// });
+router.beforeEach((to, from, next)=>{
+  if(to.path.startsWith('/login')){
+    window.sessionStorage.removeItem('Authentication');
+    next();
+  }else{
+    let token = window.sessionStorage.getItem('Authentication');
+    if(!token){
+      //未登录  跳回登录页面
+      next({path:'/login'});
+    } else {
+      next();
+    }
+  }       
+});
 export default router
