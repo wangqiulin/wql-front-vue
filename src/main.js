@@ -12,7 +12,7 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 
 //定义全局变量$http
-Vue.prototype.$http=Api 
+Vue.prototype.$http=Api
 
 new Vue({
   el: '#app',

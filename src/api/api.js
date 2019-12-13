@@ -40,7 +40,11 @@ function apiAxios (method, url, params, resp) {
    data: method === 'POST' ? params : null,
    params: method === 'GET' ? params : null,
    baseURL: root,
-   withCredentials: false
+   withCredentials: false,
+   //设置请求头
+   headers: {
+     'Authorization': window.sessionStorage.getItem('Authentication')
+   }
  })
  .then(function (res) {
    console.log("请求地址：" + root+url +", 返回内容：");

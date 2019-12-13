@@ -31,12 +31,12 @@ router.beforeEach((to, from, next)=>{
   if(to.path.startsWith('/login')){
     window.sessionStorage.removeItem('Authentication');
     next();
-  }else{
+  }else{ 
     let token = window.sessionStorage.getItem('Authentication');
     if(!token){
       //未登录  跳回登录页面
       next({path:'/login'});
-    } else {
+    }else{
       next();
     }
   }       
